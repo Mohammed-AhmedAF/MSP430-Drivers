@@ -1,2 +1,2 @@
 # MSP430-Drivers
-Drivers for MSP430
+Drivers and examples for MSP430, specifically for MSP430F5529.
