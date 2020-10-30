@@ -23,6 +23,8 @@ void TIMERA0_vidInit(void)
    SET_BIT(TA0CTL,6);
    SET_BIT(TA0CTL,7);
 
+    
+   /*Counting*/
    TA0CCR0 = 10000;
 
    /*Selecting clock*/
