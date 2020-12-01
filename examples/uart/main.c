@@ -4,6 +4,7 @@
 
 void UART_vidInit() {
     P3SEL |= BIT3+BIT4;                       // P3.3,4 = USCI_A0 TXD/RXD
+/*UART init*/
       UCA0CTL1 |= UCSWRST;                      // **Put state machine in reset**
       UCA0CTL1 |= UCSSEL_2;                     // SMCLK
       UCA0BR0 = 9;                              // 1MHz 115200 (see User's Guide)
