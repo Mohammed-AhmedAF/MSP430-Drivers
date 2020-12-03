@@ -82,8 +82,54 @@ void TIMERA0_vidInit(u8 u8TimerMode,u8 u8ClkSel, u8 u8ClkDivider, u16 u16Counter
        SET_BIT(TA0CTL,9);
        break;
    }
+}
 
-   TA0CCTL0 = CCIE; // CCR0 interrupt enabled
+void TIMERA0_vidEnableInterrupt(u8 u8InterruptID)
+{
+    switch(u8InterruptID)
+    {
+    case TIMERA0_INTERRUPT_TAIFG:
+        SET_BIT(TA0CCTL0,4); // CCR0 interrupt enabled
+        break;
+    case TIMERA0_INTERRUPT_CAPCOMP0:
+        SET_BIT(TA0CCTL1,4);
+        break;
+    case TIMERA0_INTERRUPT_CAPCOMP1:
+        SET_BIT(TA0CCTL2,4);
+        break;
+    }
+}
+
+void TIMERA0_vidDisableInterrupt(u8 u8InterruptID)
+{
+    switch(u8InterruptID)
+    {
+    case TIMERA0_INTERRUPT_TAIFG:
+        CLEAR_BIT(TA0CTL,1);
+        break;
+    case TIMERA0_INTERRUPT_CAPCOMP0:
+        CLEAR_BIT(TA0CCTL1,4);
+        break;
+    case TIMERA0_INTERRUPT_CAPCOMP2:
+        CLEAR_BIT(TA0CCTL2,4);
+    }
+}
+
+
+void TIMERA0_vidInitCompare(void) {
+
+    /*Output compare*/
+    SET_BIT(TA0CCTL1,4);
+    SET_BIT(TA0CCTL1,6);
+    SET_BIT(TA0CCTL1,7);
+
+    TA0CCR1 = 900;
+
+    SET_BIT(TA0CCTL2,4);
+    SET_BIT(TA0CCTL2,6);
+    SET_BIT(TA0CCTL2,7);
+
+    TA0CCR2 = 900;
 }
 
 
@@ -98,3 +144,4 @@ __interrupt void Timer_A0 (void)
 {
   TIMERA0_ptf();
 }
+
