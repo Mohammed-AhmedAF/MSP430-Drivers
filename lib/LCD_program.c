@@ -7,12 +7,23 @@
 
 #include "Std_Types.h"
 #include "Macros.h"
+#include <msp430.h>
+
 #include "GPIO_interface.h"
+#include "LCD_config.h"
 #include "LCD_interface.h"
 
 void LCD_vidInit(void)
 {
-    /*Direction of data pins*/
+#ifdef LCD_CONFIG_4BIT
+    /*Direction of data pins for 4-bit mode*/
+    GPIO_vidSetPinDirection(LCD_D4_PORT,LCD_D4_PIN,GPIO_DIR_OUT);
+    GPIO_vidSetPinDirection(LCD_D5_PORT,LCD_D5_PIN,GPIO_DIR_OUT);
+    GPIO_vidSetPinDirection(LCD_D6_PORT,LCD_D6_PIN,GPIO_DIR_OUT);
+    GPIO_vidSetPinDirection(LCD_D7_PORT,LCD_D7_PIN,GPIO_DIR_OUT);
+
+#else
+    /*Direction of data pins for 8-bit mode*/
     GPIO_vidSetPinDirection(LCD_D0_PORT,LCD_D0_PIN,GPIO_DIR_OUT);
     GPIO_vidSetPinDirection(LCD_D1_PORT,LCD_D1_PIN,GPIO_DIR_OUT);
     GPIO_vidSetPinDirection(LCD_D2_PORT,LCD_D2_PIN,GPIO_DIR_OUT);
@@ -21,23 +32,56 @@ void LCD_vidInit(void)
     GPIO_vidSetPinDirection(LCD_D5_PORT,LCD_D5_PIN,GPIO_DIR_OUT);
     GPIO_vidSetPinDirection(LCD_D6_PORT,LCD_D6_PIN,GPIO_DIR_OUT);
     GPIO_vidSetPinDirection(LCD_D7_PORT,LCD_D7_PIN,GPIO_DIR_OUT);
-
+#endif
     /*Direction of command pins*/
     GPIO_vidSetPinDirection(LCD_CTRL_PORT,LCD_RS,GPIO_DIR_OUT);
     GPIO_vidSetPinDirection(LCD_CTRL_PORT,LCD_RW,GPIO_DIR_OUT);
     GPIO_vidSetPinDirection(LCD_CTRL_PORT,LCD_EN,GPIO_DIR_OUT);
-
-
-
+#ifdef LCD_CONFIG_4BIT
+    LCD_vidSendCommand(0x02);
+    LCD_vidSendCommand(0x28);
     LCD_vidSendCommand(LCD_CLEAR_SCREEN); /*Clear screen*/
     LCD_vidSendCommand(LCD_RETURN_HOME); /*Move to home*/
     LCD_vidSendCommand(LCD_SET_ENTRY_MODE|LCD_MOVE_CURSOR_RIGHT); /*Set entry mode*/
     LCD_vidSendCommand(LCD_DISPLAY_ON); /*Display On/Off control*/
+    _delay_cycles(2000);
+#else
     LCD_vidSendCommand(LCD_FUNCTION_SET|LCD_8BIT|LCD_4LINES); /*Function Set*/
+    LCD_vidSendCommand(LCD_CLEAR_SCREEN); /*Clear screen*/
+    LCD_vidSendCommand(LCD_RETURN_HOME); /*Move to home*/
+    LCD_vidSendCommand(LCD_SET_ENTRY_MODE|LCD_MOVE_CURSOR_RIGHT); /*Set entry mode*/
+    LCD_vidSendCommand(LCD_FUNCTION_SET|LCD_8BIT|LCD_4LINES);
+    LCD_vidSendCommand(LCD_DISPLAY_ON); /*Display On/Off control*/
+#endif
 }
 
 void LCD_vidSendCommand(u8 u8Command)
 {
+#ifdef LCD_CONFIG_4BIT
+        GPIO_vidSetPinValue(LCD_D4_PORT,LCD_D4_PIN,GET_BIT(u8Command,4));
+        GPIO_vidSetPinValue(LCD_D5_PORT,LCD_D5_PIN,GET_BIT(u8Command,5));
+        GPIO_vidSetPinValue(LCD_D6_PORT,LCD_D6_PIN,GET_BIT(u8Command,6));
+        GPIO_vidSetPinValue(LCD_D7_PORT,LCD_D7_PIN,GET_BIT(u8Command,7));
+
+        /*RS=0*/
+        GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_RS,STD_LOW);
+
+        /*Sending enable signal*/
+        GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_EN,STD_HIGH);
+        _delay_cycles(10);
+        GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_EN,STD_LOW);
+        _delay_cycles(200);
+
+        GPIO_vidSetPinValue(LCD_D4_PORT,LCD_D4_PIN,GET_BIT(u8Command,0));
+        GPIO_vidSetPinValue(LCD_D5_PORT,LCD_D5_PIN,GET_BIT(u8Command,1));
+        GPIO_vidSetPinValue(LCD_D6_PORT,LCD_D6_PIN,GET_BIT(u8Command,2));
+        GPIO_vidSetPinValue(LCD_D7_PORT,LCD_D7_PIN,GET_BIT(u8Command,3));
+
+        GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_EN,STD_HIGH);
+        _delay_cycles(10);
+        GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_EN,STD_LOW);
+        _delay_cycles(200);
+#else
     GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_RS,STD_LOW);
     GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_RW,STD_LOW);
 
@@ -57,13 +101,40 @@ void LCD_vidSendCommand(u8 u8Command)
     __delay_cycles(2000);
     GPIO_vidSetPinValue(LCD_CTRL_PORT, LCD_EN,STD_HIGH);
     __delay_cycles(2000);
+#endif
 }
 
 void LCD_vidWriteCharacter(u8 u8Character)
 {
+#ifdef LCD_CONFIG_4BIT
+        GPIO_vidSetPinValue(LCD_D4_PORT,LCD_D4_PIN,GET_BIT(u8Character,4));
+        GPIO_vidSetPinValue(LCD_D5_PORT,LCD_D5_PIN,GET_BIT(u8Character,5));
+        GPIO_vidSetPinValue(LCD_D6_PORT,LCD_D6_PIN,GET_BIT(u8Character,6));
+        GPIO_vidSetPinValue(LCD_D7_PORT,LCD_D7_PIN,GET_BIT(u8Character,7));
 
-    GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_RS,STD_HIGH);
-    GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_RW,STD_LOW);
+        /*RS=1*/
+        GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_RS,STD_HIGH);
+
+        /*Sending enable signal*/
+        GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_EN,STD_HIGH);
+        _delay_cycles(10);
+        GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_EN,STD_LOW);
+        _delay_cycles(200);
+
+        GPIO_vidSetPinValue(LCD_D4_PORT,LCD_D4_PIN,GET_BIT(u8Character,0));
+        GPIO_vidSetPinValue(LCD_D5_PORT,LCD_D5_PIN,GET_BIT(u8Character,1));
+        GPIO_vidSetPinValue(LCD_D6_PORT,LCD_D6_PIN,GET_BIT(u8Character,2));
+        GPIO_vidSetPinValue(LCD_D7_PORT,LCD_D7_PIN,GET_BIT(u8Character,3));
+
+        GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_EN,STD_HIGH);
+        _delay_cycles(10);
+        GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_EN,STD_LOW);
+        _delay_cycles(200);
+
+
+#else
+        GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_RS,STD_HIGH);
+        GPIO_vidSetPinValue(LCD_CTRL_PORT,LCD_RW,STD_LOW);
 
         GPIO_vidSetPinValue(LCD_D0_PORT,LCD_D0_PIN,GET_BIT(u8Character,0));
         GPIO_vidSetPinValue(LCD_D1_PORT,LCD_D1_PIN,GET_BIT(u8Character,1));
@@ -81,7 +152,7 @@ void LCD_vidWriteCharacter(u8 u8Character)
         __delay_cycles(2000);
         GPIO_vidSetPinValue(LCD_CTRL_PORT, LCD_EN,STD_HIGH);
         __delay_cycles(2000);
-
+#endif
 }
 
 
@@ -139,7 +210,7 @@ void LCD_vidGoToXY(u8 u8xCpy, u8 u8yCpy) {
     LCD_vidSendCommand(u8address | 0x80);
 }
 
-/*This function has been reedited to allow writing a character
+/*This function has been re-edited to allow writing a character
  *on a specific row and a specific column.
  * */
 void LCD_vidWriteInPlace(u8 u8xCpy,u8 u8yCpy, u8 u8CharCpy) {
