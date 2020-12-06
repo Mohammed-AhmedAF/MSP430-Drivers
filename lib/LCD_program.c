@@ -1,6 +1,6 @@
 /*
  * LCD_program.c
- *
+ * 4 bit an 8 bit mode.
  *  Created on: Nov 23, 2020
  *      Author: Mohammed
  */
