@@ -11,7 +11,7 @@
 #include "GPIO_private.h"
 #include "GPIO_interface.h"
 
-void (*ExtInt) (void);
+void (*ExtInt[5]) (void);
 
 void GPIO_vidSetPinDirection(u8 u8PortNumber, u8 u8PinNumber, u8 u8Direction)
 {
@@ -308,16 +308,34 @@ void GPIO_vidTogglePinValue(u8 u8PortNumber, u8 u8PinNumber)
 
 }
 
-void GPIO_vidPutISRFunction(void (*ptrFun) (void)) {
-    ExtInt = ptrFun;
+void GPIO_vidPutISRFunction(u8 u8ExtInterruptID ,void (*ptrFun) (void)) {
+    switch (u8ExtInterruptID)
+    {
+    case GPIO_EXTIN_P1:
+            ExtInt[GPIO_EXTIN_P1] = ptrFun;
+        break;
+    case GPIO_EXTIN_P2:
+            ExtInt[GPIO_EXTIN_P2] = ptrFun;
+        break;
+    }
 }
 
 #pragma vector=PORT2_VECTOR
 __interrupt void ISR(void) {
     switch(P2IV) {
     case 0x04:
-       ExtInt();
+       ExtInt[GPIO_EXTIN_P2]();
        break;
 
+    }
+}
+
+
+#pragma vector=PORT1_VECTOR
+__interrupt void secondButton(void)
+{
+    switch(P1IV) {
+    case 0x04:
+        ExtInt[GPIO_EXTIN_P1]();
     }
 }

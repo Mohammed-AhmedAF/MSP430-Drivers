@@ -15,7 +15,7 @@ u8 GPIO_u8GetPinValue(u8 u8PortNumber, u8 u8PinNumber);
 void GPIO_vidTogglePin(u8 u8PortNumber, u8 u8PinNumber);
 void GPIO_vidSetPinResisPullUpDown(u8 u8PortNumber, u8 u8PinNumber,u8 u8ResistanceFlag);
 void GPIO_vidTogglePinValue(u8 u8PortNumber, u8 u8PinNumber);
-void GPIO_vidPutISRFunction(void (*ptrFun) (void));
+void GPIO_vidPutISRFunction(u8 u8ExtInterruptID,void (*ptrFun) (void));
 
 #define GPIO_RES_ENABLE 0
 #define GPIO_RES_DISABLE 1
@@ -41,5 +41,9 @@ void GPIO_vidPutISRFunction(void (*ptrFun) (void));
 #define GPIO_DIR_IN 0
 #define GPIO_DIR_OUT 1
 
+
+/*External interrupt IDs*/
+#define GPIO_EXTIN_P1 0
+#define GPIO_EXTIN_P2 1
 
 #endif /* GPIO_INTERFACE_H_ */
