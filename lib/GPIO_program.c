@@ -371,6 +371,20 @@ void GPIO_vidEnablePinInterrupt(u8 u8PortNumber, u8 u8PinNumber)
        }
 }
 
+void GPIO_vidDisablePinInterrupt(u8 u8PortNumber, u8 u8PinNumber)
+{
+    switch(u8PortNumber)
+    {
+         case GPIO_PORT1:
+               CLEAR_BIT(P1IE, u8PinNumber);
+           break;
+       case GPIO_PORT2:
+
+               CLEAR_BIT(P2IE, u8PinNumber);
+           break;
+    }
+}
+
 #pragma vector=PORT2_VECTOR
 __interrupt void ISR(void)
 {
