@@ -83,7 +83,6 @@ __interrupt void USCI_A0_ISR(void)
   case 2:                                   // Vector 2 - RXIFG
     while (!(UCA0IFG&UCTXIFG));             // USCI_A0 TX buffer ready?
     arrPtrFun[UART_RX]();
-    UCA0TXBUF = UCA0RXBUF;                  // TX -> RXed character
     break;
   case 4:break;                             // Vector 4 - TXIFG
   default: break;
