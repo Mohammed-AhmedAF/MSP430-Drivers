@@ -69,9 +69,9 @@ def sendTimingSignal(id):
         ser.write(time)
         ser.write(b't')
         ser.write(b't')
-        updateStatusbar("Sent " + id)
+        updateStatusbar("Sent time signal for " + id)
     except:
-        updateStatusbar("Unable to send " + id)
+        updateStatusbar("Unable to send time signal for " + id)
 
 def sendToggleSignal(id):
     try:
@@ -79,9 +79,9 @@ def sendToggleSignal(id):
         ser.write(b't')
         ser.write(b't')
         ser.write(b't')
-        updateStatusbar("Sent " + id)
+        updateStatusbar("Sent toggle signal for " + id)
     except:
-        updateStatusbar("Unable to send " + id)
+        updateStatusbar("Unable to send toggle signal for " + id)
 
 
 toggleLED1Btn = Button(controlFrame,text="Time 1",width="10",command=partial(sendTimingSignal,'a'))
@@ -132,6 +132,10 @@ def connectByUART():
         else:
                 updateStatusbar("Already connected!")
 
+def closeUARTConnection():
+    global ser
+    ser.close()
+
 def sendStopWatch():
     try:
         sendFrame(['s','s','s','s'])
@@ -141,11 +145,13 @@ def sendStopWatch():
 
 
 connectBtn = Button(connectionFrame,text="Connect",padx=10,pady=5,command=connectByUART)
+closeBtn = Button(connectionFrame,text="Close",padx=10,pady=5,command=closeUARTConnection)
 
 statusLabel.grid(row=1,column=0,columnspan=3,sticky=E+W,padx=10)
 
 #Connection elements placements
 connectBtn.grid(row=2,column=0,sticky=W+E,pady=5)
+closeBtn.grid(row=2,column=1,sticky=W+E,pady=5)
 portLabel.grid(row=0,column=0,stick=W)
 baudrateLabel.grid(row=1,column=0,sticky=W)
 baudrateCmbox.grid(row=1,column=1)
