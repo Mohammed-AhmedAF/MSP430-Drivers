@@ -27,28 +27,33 @@ def updateConnectionConfig():
 
 def getConnectionConfig():
     global baudrate
-    config.read('configuration.ini')
-    connect_config = config['connection-settings']
-    baudrate = connect_config['baudrate']
-    serialPort = connect_config['comPort']
-    #Select the value for the baudrate combox
-    if baudrate == '9600':
-        baudrateCmbox.current(0)
-    elif baudrate == '19200':
-        baudrateCmbox.current(1)
-    elif baudrate == '38400':
-        baudrateCmbox.current(2)
-    elif baudrate == '57600':
-        baudrateCmbox.current(3)
-    elif baudrate == '115200':
+    try:
+        config.read('configuration.ini')
+        connect_config = config['connection-settings']
+        baudrate = connect_config['baudrate']
+        serialPort = connect_config['comPort']
+        #Select the value for the baudrate combox
+        if baudrate == '9600':
+            baudrateCmbox.current(0)
+        elif baudrate == '19200':
+            baudrateCmbox.current(1)
+        elif baudrate == '38400':
+            baudrateCmbox.current(2)
+        elif baudrate == '57600':
+            baudrateCmbox.current(3)
+        elif baudrate == '115200':
+            baudrateCmbox.current(4)
+        else:
+            print(baudrate)
+        #Selecting the port
+        if serialPort == 'COM3':
+            portCmbox.current(0)
+        elif serialPort == 'COM4':
+            portCmbox.current(1)
+    except:
         baudrateCmbox.current(4)
-    else:
-        print(baudrate)
-    #Selecting the port
-    if serialPort == 'COM3':
-        portCmbox.current(0)
-    elif serialPort == 'COM4':
         portCmbox.current(1)
+    
 
 def updateStatusbar(message):
     statusLabel['text'] = message
