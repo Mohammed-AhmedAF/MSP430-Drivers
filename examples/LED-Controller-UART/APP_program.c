@@ -51,7 +51,7 @@ void APP_vidReceiveControlFrame(void)
     u8Byte = UART_u8GetReceivedByte();
     u8MessageArray[u8index] = u8Byte;
     u8index++;
-    /*Check if the number of byte received equals the message size*/
+    /*Check if the number of bytes received equals the message size*/
     if (u8index == MESSAGESIZE)
     {
         u8index = 0;
