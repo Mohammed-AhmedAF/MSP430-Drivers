@@ -6,7 +6,7 @@
 /*Array of pointer to functions used in callback*/
 void (*arrPtrFun[4]) (void);
 
-void UART_vidInit() {
+void UART_vidInit(void) {
       P3SEL |= BIT3+BIT4;                       // P3.3,4 = USCI_A0 TXD/RXD
       UCA0CTL1 |= UCSWRST;                      // **Put state machine in reset**
       UCA0CTL1 |= UCSSEL_2;                     // SMCLK
