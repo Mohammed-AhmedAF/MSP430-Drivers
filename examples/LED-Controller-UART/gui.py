@@ -25,7 +25,7 @@ def updateConnectionConfig():
     with open('configuration.ini','w') as f:
         config.write(f)
 
-def getConnectionConfig():
+def getConnectionConfig() -> None:
     global baudrate
     try:
         config.read('configuration.ini')
@@ -55,7 +55,7 @@ def getConnectionConfig():
         portCmbox.current(1)
     
 
-def updateStatusbar(message):
+def updateStatusbar(message: str):
     statusLabel['text'] = message
 
 def connectByUART():
