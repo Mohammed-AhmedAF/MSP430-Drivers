@@ -58,7 +58,7 @@ def getConnectionConfig() -> None:
 def updateStatusbar(message: str):
     statusLabel['text'] = message
 
-def connectByUART():
+def connectByUART() -> None:
    #Establishing serial connection
     global ser
     global baudrate
@@ -85,11 +85,11 @@ def connectByUART():
         else:
                 updateStatusbar("Already connected!")
 
-def closeUARTConnection():
+def closeUARTConnection() -> None:
     global ser
     ser.close()
 
-def sendStopWatch():
+def sendStopWatch() -> None:
     try:
         sendFrame(['s','s','s','s'])
         updateStatusbar("Stop signal sent")
